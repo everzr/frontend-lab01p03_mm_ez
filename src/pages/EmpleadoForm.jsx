@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../services/api'
+import { PUESTOS } from '../constants'
 
 const empty = {
   nombre: '',
@@ -70,9 +71,16 @@ export default function EmpleadoForm() {
         <div>
           <label>Apellido: <input name="apellido" value={model.apellido} onChange={handleChange} /></label>
         </div>
-        <div>
-          <label>Puesto: <input name="puesto" value={model.puesto} onChange={handleChange} /></label>
-        </div>
+            <div>
+              <label>Puesto:
+                <select name="puesto" value={model.puesto} onChange={handleChange}>
+                  <option value="">--Seleccione--</option>
+                  {PUESTOS.map(p => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
         <div>
           <label>Salario: <input name="salario" value={model.salario} onChange={handleChange} /></label>
         </div>

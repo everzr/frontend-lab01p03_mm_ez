@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../services/api'
+import { PUESTOS } from '../constants'
 
 export default function EmpleadosList() {
   const [empleados, setEmpleados] = useState([])
@@ -58,7 +59,14 @@ export default function EmpleadosList() {
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label>Puesto: <input value={filtroPuesto} onChange={e => setFiltroPuesto(e.target.value)} /></label>
+        <label>Puesto: 
+          <select value={filtroPuesto} onChange={e => setFiltroPuesto(e.target.value)}>
+            <option value="">--</option>
+            {PUESTOS.map(p => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+        </label>
         <button onClick={aplicarFiltroPuesto} style={{ marginLeft: 8 }}>Filtrar</button>
         <label style={{ marginLeft: 12 }}>Estado: 
           <select value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
