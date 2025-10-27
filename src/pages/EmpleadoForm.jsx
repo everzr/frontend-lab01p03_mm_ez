@@ -41,20 +41,36 @@ export default function EmpleadoForm() {
   const submit = async (e) => {
     e.preventDefault()
     // basic validation
-    if (!model.nombre || !model.apellido || !model.puesto) {
-      setError('Nombre, Apellido y Puesto son obligatorios')
+    if (!model.nombre || !model.apellido || !model.puesto || !model.fecha_contratacion) {
+      setError('Nombre, Apellido, Puesto y Fecha de contratación son obligatorios')
       return
     }
     setLoading(true)
     try {
-      if (id) {
-        await api.update(id, model)
-      } else {
-        await api.create(model)
+      // normalize salario to number-like string (backend expects numeric)
+      const payload = { ...model }
+      // ensure estado matches backend enum style: 'Activo' or 'Inactivo'
+      if (payload.estado) {
+        const s = String(payload.estado).trim()
+        payload.estado = s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
       }
+      // ensure fecha_contratacion is in yyyy-mm-dd (input type=date returns this)
+      // ensure salario is numeric if possible
+      if (payload.salario !== undefined && payload.salario !== null && payload.salario !== '') {
+        const num = Number(String(payload.salario).replace(/,/g, ''))
+        if (!Number.isNaN(num)) payload.salario = num
+        else payload.salario = payload.salario.toString()
+      }
+      if (id) {
+        await api.update(id, payload)
+      } else {
+        await api.create(payload)
+      }
+      // success: navigate back to list
       nav('/empleados')
     } catch (err) {
-      setError(err.message)
+      console.error('Error creating/updating empleado:', err)
+      setError(err.message || 'Error desconocido')
     } finally {
       setLoading(false)
     }
@@ -88,6 +104,10 @@ export default function EmpleadoForm() {
               <div className="col-md-6 mb-3">
                 <label className="form-label">Salario</label>
                 <input className="form-control" name="salario" value={model.salario} onChange={handleChange} />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Fecha de contratación</label>
+                <input type="date" className="form-control" name="fecha_contratacion" value={model.fecha_contratacion || ''} onChange={handleChange} />
               </div>
               <div className="col-md-6 mb-3">
                 <label className="form-label">Estado</label>
