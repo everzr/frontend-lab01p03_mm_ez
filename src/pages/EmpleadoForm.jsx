@@ -61,42 +61,50 @@ export default function EmpleadoForm() {
   }
 
   return (
-    <div>
-      <h2>{id ? 'Editar' : 'Crear'} Empleado</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={submit}>
-        <div>
-          <label>Nombre: <input name="nombre" value={model.nombre} onChange={handleChange} /></label>
-        </div>
-        <div>
-          <label>Apellido: <input name="apellido" value={model.apellido} onChange={handleChange} /></label>
-        </div>
-            <div>
-              <label>Puesto:
-                <select name="puesto" value={model.puesto} onChange={handleChange}>
+    <div className="container-fluid px-4 mt-4">
+      <div className="card">
+        <div className="card-body">
+          <h3 className="card-title">{id ? 'Editar' : 'Crear'} Empleado</h3>
+          {error && <div className="alert alert-danger">{error}</div>}
+          <form onSubmit={submit}>
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Nombre</label>
+                <input className="form-control" name="nombre" value={model.nombre} onChange={handleChange} />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Apellido</label>
+                <input className="form-control" name="apellido" value={model.apellido} onChange={handleChange} />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Puesto</label>
+                <select className="form-select" name="puesto" value={model.puesto} onChange={handleChange}>
                   <option value="">--Seleccione--</option>
                   {PUESTOS.map(p => (
                     <option key={p} value={p}>{p}</option>
                   ))}
                 </select>
-              </label>
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Salario</label>
+                <input className="form-control" name="salario" value={model.salario} onChange={handleChange} />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Estado</label>
+                <select className="form-select" name="estado" value={model.estado} onChange={handleChange}>
+                  <option value="Activo">Activo</option>
+                  <option value="Inactivo">Inactivo</option>
+                </select>
+              </div>
             </div>
-        <div>
-          <label>Salario: <input name="salario" value={model.salario} onChange={handleChange} /></label>
-        </div>
-        <div>
-          <label>Estado: 
-            <select name="estado" value={model.estado} onChange={handleChange}>
-              <option value="Activo">Activo</option>
-              <option value="Inactivo">Inactivo</option>
-            </select>
-          </label>
-        </div>
 
-        <div style={{ marginTop: 12 }}>
-          <button type="submit" disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
+            <div className="mt-3">
+              <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
+              <button type="button" className="btn btn-secondary ms-2" onClick={() => window.history.back()}>Cancelar</button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   )
 }

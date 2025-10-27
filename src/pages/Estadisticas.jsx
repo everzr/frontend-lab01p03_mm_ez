@@ -19,27 +19,64 @@ export default function Estadisticas() {
     })()
   }, [])
 
-  if (loading) return <p>Cargando estadísticas...</p>
-  if (error) return <p style={{ color: 'red' }}>{error}</p>
+  if (loading) return <div className="container mt-4">Cargando estadísticas...</div>
+  if (error) return <div className="container mt-4"><div className="alert alert-danger">{error}</div></div>
 
   return (
-    <div>
-      <h2>Estadísticas</h2>
+    <div className="container-fluid px-4 mt-4">
+      <h2 className="mb-3">Estadísticas</h2>
       {stats ? (
-        <div>
-          <p>Total empleados: {stats.totalEmpleados ?? stats.total ?? 'N/A'}</p>
-          <p>Activos: {stats.activos ?? 'N/A'}</p>
-          <p>Inactivos: {stats.inactivos ?? 'N/A'}</p>
-          <p>Promedio salarial: {stats.promedioSalarios ?? 'N/A'}</p>
-          <p>Antigüedad promedio (años): {stats.antiguedadPromedio ?? 'N/A'}</p>
-          <h3>Empleados por puesto</h3>
-          {stats.empleadosPorPuesto ? (
-            <ul>
-              {Object.entries(stats.empleadosPorPuesto).map(([k, v]) => (
-                <li key={k}>{k}: {v}</li>
-              ))}
-            </ul>
-          ) : <p>No hay datos por puesto</p>}
+        <div className="row g-3">
+          <div className="col-md-3">
+            <div className="card text-bg-light mb-3">
+              <div className="card-body">
+                <h5 className="card-title">Total empleados</h5>
+                <p className="card-text fs-4">{stats.totalEmpleados ?? stats.total ?? 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="card text-bg-light mb-3">
+              <div className="card-body">
+                <h5 className="card-title">Activos</h5>
+                <p className="card-text fs-4">{stats.activos ?? 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="card text-bg-light mb-3">
+              <div className="card-body">
+                <h5 className="card-title">Inactivos</h5>
+                <p className="card-text fs-4">{stats.inactivos ?? 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="card text-bg-light mb-3">
+              <div className="card-body">
+                <h5 className="card-title">Promedio salarial</h5>
+                <p className="card-text fs-4">{stats.promedioSalarios ?? 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12">
+            <h4>Empleados por puesto</h4>
+            {stats.empleadosPorPuesto ? (
+              <div className="row">
+                {Object.entries(stats.empleadosPorPuesto).map(([k, v]) => (
+                  <div key={k} className="col-sm-6 col-md-3">
+                    <div className="card mb-2">
+                      <div className="card-body">
+                        <h6 className="card-subtitle mb-2 text-muted">{k}</h6>
+                        <p className="card-text fs-5">{v}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : <p>No hay datos por puesto</p>}
+          </div>
         </div>
       ) : <p>No hay estadísticas</p>}
     </div>
