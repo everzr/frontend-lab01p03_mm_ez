@@ -11,15 +11,17 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <main style={{ padding: '1rem', paddingTop: '84px' }}>
-        <Routes>
+      <main className="pt-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/empleados" element={<EmpleadosList />} />
           <Route path="/empleados/nuevo" element={<EmpleadoForm />} />
           <Route path="/empleados/editar/:id" element={<EmpleadoForm />} />
           <Route path="/estadisticas" element={<Estadisticas />} />
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </div>
       </main>
     </BrowserRouter>
   )

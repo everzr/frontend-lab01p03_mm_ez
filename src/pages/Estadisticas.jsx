@@ -93,11 +93,17 @@ export default function Estadisticas() {
       }
     }
 
+    // promedio antiguedad (años) - backend field: promedioAntiguedadAnios
+    if (out.promedioAntiguedadAnios != null && out.promedioAntiguedad == null) {
+      const n = Number(out.promedioAntiguedadAnios)
+      out.promedioAntiguedad = Number.isFinite(n) ? n : null
+    }
+
     return out
   }, [stats])
 
-  if (loading) return <div className="container-fluid px-4 mt-4">Cargando estadísticas...</div>
-  if (error) return <div className="container-fluid px-4 mt-4"><div className="alert alert-danger">{error}</div></div>
+  if (loading) return <div className="page-container">Cargando estadísticas...</div>
+  if (error) return <div className="page-container"><div className="rounded bg-red-50 text-red-700 p-3">{error}</div></div>
 
   const s = derived
   if (!s) return <div className="container-fluid px-4 mt-4">No hay estadísticas</div>
@@ -131,59 +137,49 @@ export default function Estadisticas() {
   }
 
   return (
-    <div className="container-fluid px-4 mt-4">
-      <h2 className="mb-3 text-center">Estadísticas</h2>
-      <div className="row g-3 mb-4">
-        <div className="col-md-3">
-          <div className="card text-bg-light mb-3">
-            <div className="card-body text-center">
-              <h5 className="card-title">Total empleados</h5>
-              <p className="card-text fs-4">{s.totalEmpleados ?? 'N/A'}</p>
-            </div>
-          </div>
+    <div className="page-container">
+      <h2 className="mb-6 text-center text-2xl font-semibold">Estadísticas</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <div className="card-surface text-center">
+          <h5 className="text-sm text-slate-600">Total empleados</h5>
+          <p className="text-2xl font-bold">{s.totalEmpleados ?? 'N/A'}</p>
         </div>
-        <div className="col-md-3">
-          <div className="card text-bg-light mb-3">
-            <div className="card-body text-center">
-              <h5 className="card-title">Activos</h5>
-              <p className="card-text fs-4">{s.activos ?? 'N/A'}</p>
-            </div>
-          </div>
+        <div className="card-surface text-center">
+          <h5 className="text-sm text-slate-600">Activos</h5>
+          <p className="text-2xl font-bold">{s.activos ?? 'N/A'}</p>
         </div>
-        <div className="col-md-3">
-          <div className="card text-bg-light mb-3">
-            <div className="card-body text-center">
-              <h5 className="card-title">Inactivos</h5>
-              <p className="card-text fs-4">{s.inactivos ?? 'N/A'}</p>
-            </div>
-          </div>
+        <div className="card-surface text-center">
+          <h5 className="text-sm text-slate-600">Inactivos</h5>
+          <p className="text-2xl font-bold">{s.inactivos ?? 'N/A'}</p>
         </div>
-        <div className="col-md-3">
-          <div className="card text-bg-light mb-3">
-            <div className="card-body text-center">
-              <h5 className="card-title">Promedio salarial</h5>
-              <p className="card-text fs-4">{s.promedioSalarios ?? 'N/A'}</p>
-            </div>
-          </div>
+        <div className="card-surface text-center">
+          <h5 className="text-sm text-slate-600">Promedio salarial</h5>
+          <p className="text-2xl font-bold">{(function(){
+            const v = s.promedioSalarios
+            const n = Number(v)
+            if (Number.isFinite(n)) return new Intl.NumberFormat('es-SV', { style: 'currency', currency: 'USD' }).format(n)
+            if (v == null) return 'N/A'
+            return String(v)
+          })()}</p>
+        </div>
+        <div className="card-surface text-center">
+          <h5 className="text-sm text-slate-600">Antigüedad promedio</h5>
+          <p className="text-2xl font-bold">{(function(){
+            const v = s.promedioAntiguedad
+            const n = Number(v)
+            return Number.isFinite(n) ? `${n.toFixed(1)} años` : 'N/A'
+          })()}</p>
         </div>
       </div>
 
-      <div className="row">
-        <div className="col-lg-8 mb-4">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Empleados por puesto</h5>
-              {puestos.length ? <Bar data={barData} options={{ responsive: true, plugins: { legend: { display: false } } }} /> : <p>No hay datos por puesto</p>}
-            </div>
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 card-surface">
+          <h5 className="text-lg font-medium mb-3">Empleados por puesto</h5>
+          {puestos.length ? <Bar data={barData} options={{ responsive: true, plugins: { legend: { display: false } } }} /> : <p>No hay datos por puesto</p>}
         </div>
-        <div className="col-lg-4 mb-4">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Estado</h5>
-              { (s.activos != null || s.inactivos != null) ? <Pie data={pieData} options={{ responsive: true }} /> : <p>No hay datos de estado</p> }
-            </div>
-          </div>
+        <div className="card-surface">
+          <h5 className="text-lg font-medium mb-3">Estado</h5>
+          { (s.activos != null || s.inactivos != null) ? <Pie data={pieData} options={{ responsive: true }} /> : <p>No hay datos de estado</p> }
         </div>
       </div>
     </div>
